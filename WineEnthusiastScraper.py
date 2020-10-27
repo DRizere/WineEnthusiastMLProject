@@ -1,3 +1,4 @@
+# This Python file uses the following encoding: utf-8
 import requests;
 from urllib.request import Request, urlopen;
 from bs4 import BeautifulSoup;
@@ -6,6 +7,8 @@ import re
 import threading
 import time
 import io
+import argparse
+import timeit
 
 #class WineBottle:
 #1    URL,
@@ -25,7 +28,7 @@ import io
 
 def write_wine_data(pageNumber):
     #file to write to
-    writing_file = io.open("WineData%s.txt" % str(pageNumber), "w", encoding="utf-8")
+    writing_file = io.open("Data/WineData%s.txt" % str(pageNumber), "w", encoding="utf-8")
 
     list_url = "https://www.winemag.com/?s=&drink_type=wine&pub_date_web=2&page=" + str(pageNumber)
 
@@ -85,12 +88,18 @@ def write_wine_data(pageNumber):
     writing_file.close()
     print("Page %s finished at: %s" % (pageNumber, time.ctime(time.time())))
 
-thread_list = list()
+parser = argparse.ArgumentParser()
+parser.add_argument("first", type=int, help="first page to scrape")
+parser.add_argument("last", type=int, help="last page to scrape")
+args = parser.parse_args()
 
-error_page_number = -1
+start = timeit.default_timer()
 
-for x in range(int(sys.argv[1]), int(sys.argv[2])+1):
-    error_page_number = x
+for x in range(int(args.first), int(args.last)+1):
     write_wine_data(x)
 
-print("Data collection complete for pages %s-%s" % (sys.argv[1], sys.argv[2]))
+#Your statements here
+
+stop = timeit.default_timer()
+
+print("Data collection complete for pages %d-%d finished in: %d seconds." % (args.first, args.last, stop - start))
